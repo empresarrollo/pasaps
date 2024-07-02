@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@2captcha/captcha-solver": "^1.0.1",
     "node-notifier": "^10.0.1",
-    "puppeteer": "^22.11.0"
+    "puppeteer": "^22.11.0",
+    "set-interval-async": "^3.0.3"
   }
 }
