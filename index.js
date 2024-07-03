@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const notifier = require('node-notifier');
 
 const Captcha = require("@2captcha/captcha-solver");
-const solver = new Captcha.Solver("ACA-PONER-APIKEY");
+const solver = new Captcha.Solver("PONER_API_KEY_ACA");
 
 const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async/fixed');
 
@@ -13,7 +13,6 @@ const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async/fix
 
 
     const ejecutarFuncion = async () => {
-
         try {
             console.log('Ejecutando ejecutarFuncion...');
             console.log('Abriendo navegador...');
@@ -33,12 +32,15 @@ const { setIntervalAsync, clearIntervalAsync } = require('set-interval-async/fix
 
     await ejecutarFuncion()
 
-    timer = setIntervalAsync(async () => {
-        console.log('Hello')        
-        await ejecutarFuncion()
-        console.log('Bye')
-    }, 1000 * 60 * 15); // 15 minutos = 1000 milisegundos x 60 segundos x 15 minutos
+    if(!encontro_turnos){
+        timer = setIntervalAsync(async () => {
+            console.log('Hello')        
+            await ejecutarFuncion()
+            console.log('Bye')
+        }, 1000 * 60 * 15); // 15 minutos = 1000 milisegundos x 60 segundos x 15 minutos
+    }
 
+    
 
 })();
 
@@ -178,16 +180,13 @@ async function abrirChromeYHacerTodo()
             }
         }
     });
-
+    
+    
+    await autoScroll(page);
+    
     // hace click en la tercera opcion de ese select --- cambiar por (1) para elegiar la primera = 1 persona.
     await page.waitForSelector('div.mat-select-panel-wrap mat-option:nth-child(3)', { visible: true });
-    await page.evaluate(async () => {    
-        const xx = document.querySelector('div.mat-select-panel-wrap mat-option:nth-child(3)')
-        xx.click()
-    })
-
-
-    await autoScroll(page);
+    await page.click('div.mat-select-panel-wrap mat-option:nth-child(3)')
 
 
     let pifioElCaptcha = true
@@ -296,8 +295,9 @@ async function resolverCaptcha(page)
             numeric: 0,
             min_len: 4,
             max_len: 4,
-            phrase: false,
-            case: true
+            phrase: 0,
+            regsense: 1,
+            
         })    
             
         texto_captcha = res.data
@@ -318,7 +318,8 @@ async function resolverCaptcha(page)
 
     } catch (error) {
 
-        console.log('error al resolver captcha');
+        console.log('error al resolver captcha xx');
+        console.log(error)
 
         return false
     }
